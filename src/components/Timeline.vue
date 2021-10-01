@@ -6,14 +6,17 @@
         :key="period"
         :class="{ 'is-active': period === currentPeriod }"
         @click="setPeriod(period)"
+        :data-test="period"
         >{{ period }}</a
       >
     </span>
-    <a v-for="post in posts" :key="post.id" class="panel-block">
-      <a>{{ post.title }}</a
-      >&nbsp;
-      <div>{{ post.created.format("Do MMM") }}</div>
-    </a>
+    <timeline-post
+      v-for="post in posts"
+      :key="post.id"
+      :post="post"
+      class="panel-block"
+    >
+    </timeline-post>
   </nav>
 </template>
 
@@ -21,11 +24,15 @@
 import { defineComponent, ref, computed } from "vue"
 import moment from "moment"
 import { today, thisWeek, thisMonth } from "@/mock"
+import TimelinePost from "@/components/TimelinePost.vue"
 
 type Period = "Today" | "This Week" | "This Month"
 
 export default defineComponent({
   name: "Timeline",
+  components: {
+    TimelinePost,
+  },
   setup() {
     const periods: Period[] = ["Today", "This Week", "This Month"]
     const currentPeriod = ref<Period>("Today")
