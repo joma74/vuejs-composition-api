@@ -36,4 +36,4 @@ import { today, thisWeek, thisMonth } from "@/mock"
 
 ### source-map support for vue components in browser
 
-See [configureWebpack section in ./vue.config.js](./vue.config.js)
+See [configureWebpack section in ./vue.config.js](./vue.config.js#L6)
