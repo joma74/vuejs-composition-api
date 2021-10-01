@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue"
 import moment from "moment"
-import { today, thisWeek, thisMonth } from "../mock"
+import { today, thisWeek, thisMonth } from "@/mock"
 
 type Period = "Today" | "This Week" | "This Month"
 
