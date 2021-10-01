@@ -1,6 +1,9 @@
 # vuejs-composition-api
 
 ## Project setup
+
+See https://github.com/lmiller1990/vuejs-composition-api-course
+
 ```
 yarn install
 ```
