@@ -13,13 +13,13 @@ export const today: Post = {
 }
 
 export const thisWeek: Post = {
-  id: "1",
+  id: "2",
   title: "This Week",
   created: moment().subtract("days", 2),
 }
 
 export const thisMonth: Post = {
-  id: "1",
+  id: "3",
   title: "This Month",
   created: moment().subtract("days", 12),
 }
