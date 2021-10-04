@@ -9,7 +9,8 @@ export interface Post {
 export const today: Post = {
   id: "1",
   title: "Today",
-  created: moment(),
+  // reactivity.esm-bundler.js:512 Set operation on key "_isValid" failed: target is readonly.
+  created: moment().subtract("seconds", 1),
 }
 
 export const thisWeek: Post = {
