@@ -53,3 +53,7 @@ See https://flaviocopes.com/how-to-clone-javascript-object/#json-serialization s
 > By doing this you will lose any Javascript property that has no equivalent type in JSON, like Function or Infinity. Any property that’s assigned to undefined will be ignored by JSON.stringify, causing them to be missed on the cloned object.
 >
 > Also, some objects are converted to strings, like Date objects for example (also, not taking into account the timezone and defaulting to UTC), Set, Map and many others: ...
+
+### vue's nextTick() vs vue-util's flushPromises()
+
+nextTick only flushes vue promises. flushPromises also flushes all other promises.
