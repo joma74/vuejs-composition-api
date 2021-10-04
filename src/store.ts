@@ -2,6 +2,7 @@ import { reactive, readonly } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { today, thisWeek, thisMonth, Post } from "@/mock"
+import cloneDeep from "lodash/cloneDeep"
 
 interface State {
   posts: PostState
@@ -36,19 +37,6 @@ class Store {
     postsState.loaded = true
     this.state.posts = postsState
   }
-
-  fetchPostsFromMock() {
-    this.state.posts.loaded = false
-    const postsState: PostState = deepClone(initialPosts)
-    const all = new Map<string, Post>()
-    postsState.ids = [today.id, thisWeek.id, thisMonth.id]
-    all.set(today.id, today)
-    all.set(thisWeek.id, thisWeek)
-    all.set(thisMonth.id, thisMonth)
-    postsState.all = all
-    postsState.loaded = true
-    this.state.posts = postsState
-  }
 }
 
 const initialPosts = {
@@ -62,7 +50,8 @@ const initialState = {
 } as DeepReadonly<State>
 
 const deepClone = <T>(obj: T): DeepWritable<T> => {
-  return JSON.parse(JSON.stringify(obj))
+  // return JSON.parse(JSON.stringify(obj))
+  return cloneDeep(obj) as DeepWritable<T>
 }
 
 const store = new Store(deepClone(initialState))
