@@ -57,3 +57,14 @@ See https://flaviocopes.com/how-to-clone-javascript-object/#json-serialization s
 ### vue's nextTick() vs vue-util's flushPromises()
 
 nextTick only flushes vue promises. flushPromises also flushes all other promises.
+
+### import of vue component must end with .vue
+
+Example: `import Home from "@/components/Home.vue"`
+
+### Vs-code volar extension misses code completion for vue-router
+
+See
+
+- https://github.com/johnsoncodehk/volar, "Define Global Components"
+- https://github.com/johnsoncodehk/volar/issues/547#issuecomment-932773344
