@@ -23,7 +23,8 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue"
 import moment from "moment"
-import { today, thisWeek, thisMonth } from "@/mock"
+import { Post } from "@/mock"
+import { useStore } from "@/store"
 import TimelinePost from "@/components/TimelinePost.vue"
 
 type Period = "Today" | "This Week" | "This Month"
@@ -43,8 +44,17 @@ export default defineComponent({
     await delay()
     const periods: Period[] = ["Today", "This Week", "This Month"]
     const currentPeriod = ref<Period>("Today")
+    const store = useStore()
+    store.fetchPostsFromMock()
+    const allPosts = store.getState().posts.ids.reduce<Post[]>((acc, id) => {
+      const thePost = store.getState().posts.all.get(id)
+      if (!thePost) {
+        throw new Error("This post was not found")
+      }
+      return acc.concat(thePost)
+    }, [])
     const posts = computed(() => {
-      return [today, thisWeek, thisMonth].filter((periodOfPost) => {
+      return allPosts.filter((periodOfPost) => {
         if (currentPeriod.value === periods[0]) {
           return periodOfPost.created.isSame(moment(), "day")
         }
