@@ -29,23 +29,18 @@ import TimelinePost from "@/components/TimelinePost.vue"
 
 type Period = "Today" | "This Week" | "This Month"
 
-function delay() {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 1000)
-  })
-}
-
 export default defineComponent({
   name: "Timeline",
   components: {
     TimelinePost,
   },
   async setup() {
-    await delay()
     const periods: Period[] = ["Today", "This Week", "This Month"]
     const currentPeriod = ref<Period>("Today")
     const store = useStore()
-    store.fetchPostsFromMock()
+    if (!store.getState().posts.loaded) {
+      await store.fetchPosts()
+    }
     const allPosts = store.getState().posts.ids.reduce<Post[]>((acc, id) => {
       const thePost = store.getState().posts.all.get(id)
       if (!thePost) {
