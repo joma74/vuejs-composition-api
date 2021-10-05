@@ -9,15 +9,24 @@
   </div>
   <div class="columns">
     <div class="column">
-      <div contenteditable ref="contentEditable" @input="handleInput" />
+      <!-- v-model is not applicable here. Input to this div are forwarded to handleInput -->
+      <div
+        contenteditable
+        style="white-space: pre;"
+        ref="contentEditable"
+        @input="handleInput"
+      />
     </div>
-    <div class="column"><div v-html="html"></div></div></div
+    <div class="column">
+      <div v-html="html"></div>
+    </div></div
 ></template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch, watchEffect } from "vue"
 import { Post } from "@/mock"
 import { parse } from "marked"
+import highlight from "highlight.js"
 
 export default defineComponent({
   name: "PostWriter",
@@ -35,8 +44,19 @@ export default defineComponent({
     // Ref to a DOM node, see template above
     const contentEditable = ref<HTMLDivElement | null>(null)
 
+    /**
+     * Everytime the text in content changes, the html ref is updated
+     */
     watchEffect(() => {
-      html.value = parse(content.value)
+      let markdown = parse(content.value, {
+        gfm: true,
+        breaks: true,
+        highlight: (code: string) => {
+          return highlight.highlightAuto(code).value
+        },
+        langPrefix: "hljs language-",
+      })
+      html.value = markdown
     })
     // ... is equivalent to
     // watch(
@@ -49,7 +69,10 @@ export default defineComponent({
     //   },
     // )
 
-    // contentEditable is null until DOM mounted
+    /**
+     * contentEditable is null until DOM mounted
+     * The text of content.value is set in the textContent of DOM element contentEditable
+     */
     onMounted(() => {
       if (!contentEditable.value) {
         throw Error("This should never happen!")
@@ -57,6 +80,9 @@ export default defineComponent({
       contentEditable.value.textContent = content.value
     })
 
+    /**
+     * The input from DOM element contentEditable is saved in content.value
+     */
     const handleInput = () => {
       if (!contentEditable.value) {
         throw Error("This should never happen!")
