@@ -15,14 +15,19 @@
         style="white-space: pre;"
         ref="markdownRawElement"
         @input="handleInput"
+        data-test="markdownRawElement"
       />
     </div>
     <div class="column">
-      <div v-html="markdownAsHtmlContent"></div>
+      <div v-html="markdownHtmlContent" data-test="markdownHtmlElement"></div>
     </div>
     <div class="columns">
       <div class="column">
-        <button @click="save" class="button is-primary is-pulled-right">
+        <button
+          @click="save"
+          class="button is-primary is-pulled-right"
+          data-test="submitElement"
+        >
           Submit
         </button>
       </div>
@@ -63,17 +68,19 @@ export default defineComponent({
     const markdownRawContent = ref(
       "## Title\nEnter your post content...\n```js\nlet a = 1\nconst f = () => {\n   console.log(a)\n}\nf()\n```\n",
     )
-    const markdownAsHtmlContent = ref("")
+    const markdownHtmlContent = ref("")
     // Ref to a DOM node, see template above
     const markdownRawElement = ref<HTMLDivElement | null>(null)
 
     /**
      * Displays the scope id for this component instance e.g. data-v-2f5679e3
      */
-    console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
+    console.log(
+      `scopeId is >>${getCurrentInstance()?.proxy?.$options.__scopeId}<<`,
+    )
 
     const parseHtml = (_newMarkdownRawContent: string) => {
-      let _markdownAsHtmlContent = parse(_newMarkdownRawContent, {
+      let _markdownHtmlContent = parse(_newMarkdownRawContent, {
         gfm: true,
         breaks: true,
         highlight: (code: string, lang: string) => {
@@ -82,7 +89,7 @@ export default defineComponent({
         },
         langPrefix: "hljs language-",
       })
-      markdownAsHtmlContent.value = _markdownAsHtmlContent
+      markdownHtmlContent.value = _markdownHtmlContent
     }
 
     watch(
@@ -100,7 +107,7 @@ export default defineComponent({
     // watch(
     //   markdown,
     //   (newContent) => {
-    //     markdownAsHtmlContent.value = parse(newContent)
+    //     markdownHtmlContent.value = parse(newContent)
     //   },
     //   {
     //     immediate: true, // update immediate, even on first render
@@ -133,7 +140,7 @@ export default defineComponent({
       const newPost: Post = {
         ...props.post,
         title: title.value,
-        html: markdownAsHtmlContent.value,
+        html: markdownHtmlContent.value,
         markdown: markdownRawContent.value,
       }
       // emit event
@@ -141,7 +148,7 @@ export default defineComponent({
     }
 
     return {
-      markdownAsHtmlContent,
+      markdownHtmlContent,
       title,
       markdownRawContent,
       markdownRawElement,

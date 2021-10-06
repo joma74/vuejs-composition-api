@@ -77,3 +77,11 @@ See https://v3.vuejs.org/api/composition-api.html#getcurrentinstance
 import { getCurrentInstance } from "vue"
 console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
 ```
+
+### What does `[Vue warn]: Extraneous non-emits...` mean
+
+```
+runtime-core.esm-bundler.js:6551 [Vue warn]: Extraneous non-emits event listeners (save) were passed to component but could not be automatically inherited because component renders fragment or text root nodes. If the listener is intended to be a component custom event listener only, declare it using the "emits" option.
+```
+
+Means: The emitting component misses an emit declaration.
