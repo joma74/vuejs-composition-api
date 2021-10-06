@@ -1,4 +1,4 @@
-<template><post-writer :post="newPost"></post-writer></template>
+<template><post-writer @save="save" :post="newPost"></post-writer></template>
 
 <script lang="ts">
 import { defineComponent } from "@vue/runtime-core"
@@ -18,8 +18,14 @@ export default defineComponent({
       title: "Enter your title here",
       created: moment(),
     }
+
+    const save = (post: Post) => {
+      console.log(post)
+    }
+
     return {
       newPost,
+      save,
     }
   },
 })

@@ -52,7 +52,13 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  emits: {
+    save: (post: Post) => {
+      //validation
+      return true
+    },
+  },
+  setup(props, ctx) {
     const title = ref(props.post.title)
     const markdownRawContent = ref(
       "## Title\nEnter your post content...\n```js\nlet a = 1\nconst f = () => {\n   console.log(a)\n}\nf()\n```\n",
@@ -126,10 +132,12 @@ export default defineComponent({
       // create post
       const newPost: Post = {
         ...props.post,
+        title: title.value,
         html: markdownAsHtmlContent.value,
         markdown: markdownRawContent.value,
       }
       // emit event
+      ctx.emit("save", newPost)
     }
 
     return {
