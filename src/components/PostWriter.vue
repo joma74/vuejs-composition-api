@@ -3,7 +3,12 @@
     <div class="column">
       <div class="field">
         <div class="label">New post</div>
-        <input type="text" class="input" v-model="title" />
+        <input
+          type="text"
+          class="input"
+          v-model="title"
+          data-test="title-element"
+        />
       </div>
     </div>
   </div>
