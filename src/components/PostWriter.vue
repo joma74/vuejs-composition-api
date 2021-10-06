@@ -13,12 +13,12 @@
       <div
         contenteditable
         style="white-space: pre;"
-        ref="contentEditable"
+        ref="markdownRawElement"
         @input="handleInput"
       />
     </div>
     <div class="column">
-      <div v-html="markdownAsHtml"></div>
+      <div v-html="markdownAsHtmlContent"></div>
     </div>
     <div class="columns">
       <div class="column">
@@ -54,21 +54,20 @@ export default defineComponent({
   },
   setup(props) {
     const title = ref(props.post.title)
-    const content = ref(
+    const markdownRawContent = ref(
       "## Title\nEnter your post content...\n```js\nlet a = 1\nconst f = () => {\n   console.log(a)\n}\nf()\n```\n",
     )
-    // const markdownAsHtml = ref(parse(content.value))
-    const markdownAsHtml = ref("")
+    const markdownAsHtmlContent = ref("")
     // Ref to a DOM node, see template above
-    const contentEditable = ref<HTMLDivElement | null>(null)
+    const markdownRawElement = ref<HTMLDivElement | null>(null)
 
     /**
      * Displays the scope id for this component instance e.g. data-v-2f5679e3
      */
     console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
 
-    const parseHtml = (_newMarkdown: string) => {
-      let markdown = parse(_newMarkdown, {
+    const parseHtml = (_newMarkdownRawContent: string) => {
+      let _markdownAsHtmlContent = parse(_newMarkdownRawContent, {
         gfm: true,
         breaks: true,
         highlight: (code: string, lang: string) => {
@@ -77,13 +76,13 @@ export default defineComponent({
         },
         langPrefix: "hljs language-",
       })
-      markdownAsHtml.value = markdown
+      markdownAsHtmlContent.value = _markdownAsHtmlContent
     }
 
     watch(
-      content,
-      debounce((_newMarkdown: string) => {
-        parseHtml(_newMarkdown)
+      markdownRawContent,
+      debounce((_newMarkdownRawContent: string) => {
+        parseHtml(_newMarkdownRawContent)
       }, 250),
       {
         immediate: true,
@@ -93,9 +92,9 @@ export default defineComponent({
     // watchEffect(() => { ... }
     // ... is equivalent to
     // watch(
-    //   content,
+    //   markdown,
     //   (newContent) => {
-    //     markdownAsHtml.value = parse(newContent)
+    //     markdownAsHtmlContent.value = parse(newContent)
     //   },
     //   {
     //     immediate: true, // update immediate, even on first render
@@ -103,36 +102,41 @@ export default defineComponent({
     // )
 
     /**
-     * contentEditable is null until DOM mounted
-     * The text of content.value is set in the textContent of DOM element contentEditable
+     * markdownRawElement is null until DOM mounted
+     * The text of markdown.value is set in the textContent of DOM element markdownRawElement
      */
     onMounted(() => {
-      if (!contentEditable.value) {
+      if (!markdownRawElement.value) {
         throw Error("This should never happen!")
       }
-      contentEditable.value.textContent = content.value
+      markdownRawElement.value.textContent = markdownRawContent.value
     })
 
     /**
-     * The input from DOM element contentEditable is saved in content.value
+     * The input from DOM element markdownRawElement is saved in markdownRawContent.value
      */
     const handleInput = () => {
-      if (!contentEditable.value) {
+      if (!markdownRawElement.value) {
         throw Error("This should never happen!")
       }
-      content.value = contentEditable.value.textContent || ""
+      markdownRawContent.value = markdownRawElement.value.textContent || ""
     }
 
     const save = () => {
       // create post
+      const newPost: Post = {
+        ...props.post,
+        html: markdownAsHtmlContent.value,
+        markdown: markdownRawContent.value,
+      }
       // emit event
     }
 
     return {
-      markdownAsHtml,
+      markdownAsHtmlContent,
       title,
-      content,
-      contentEditable,
+      markdownRawContent,
+      markdownRawElement,
       handleInput,
       save,
     }
