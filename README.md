@@ -68,3 +68,12 @@ See
 
 - https://github.com/johnsoncodehk/volar, "Define Global Components"
 - https://github.com/johnsoncodehk/volar/issues/547#issuecomment-932773344
+
+### Where is `this.$options` gone?
+
+See https://v3.vuejs.org/api/composition-api.html#getcurrentinstance
+
+```ts
+import { getCurrentInstance } from "vue"
+console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
+```
