@@ -85,3 +85,66 @@ runtime-core.esm-bundler.js:6551 [Vue warn]: Extraneous non-emits event listener
 ```
 
 Means: The emitting component misses an emit declaration.
+
+### v-model on component, a most confusing construct
+
+See https://v3.vuejs.org/guide/migration/v-model.html
+
+> BREAKING: When used on custom components, v-model prop and event default names are changed:
+>
+> - prop: value -> modelValue;
+> - event: input -> update:modelValue;
+
+See https://v3.vuejs.org/guide/component-basics.html#using-v-model-on-components
+
+> ```ts
+> <custom-input v-model="searchText" />
+> ```
+>
+> When used on a component, v-model instead does this:
+>
+> ```ts
+> <custom-input
+>   :model-value="searchText"
+>   @update:model-value="searchText = $event"
+> </custom-input>
+> ```
+>
+> For this to actually work though, the \<input\> inside the component must:
+>
+> - Bind the `value` attribute to the `modelValue` prop
+> - On input, emit an `update:modelValue` event with the new value
+>
+> ```ts
+> app.component("custom-input", {
+>   props: ["modelValue"],
+>   emits: ["update:modelValue"],
+>   template: `
+>    <input
+>      :value="modelValue"
+>      @input="$emit('update:modelValue', $event.target.value)"
+>     >
+>   `,
+> })
+> ```
+
+Or, somewhat more simple, as has been proven:
+Caller `App.vue`
+
+```ts
+<form-input v-model="username" name="Username" />
+```
+
+Callee `FormInput.vue`
+
+```ts
+...
+<input v-model="modelValue" />
+...
+props: {
+    modelValue: {
+      type: String,
+      required: true,
+    },
+}
+```

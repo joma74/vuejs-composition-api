@@ -8,23 +8,35 @@
     </div>
   </div>
   <section class="section">
-    <div class="container"><navbar /><router-view /></div>
+    <div class="container">
+      <form-input
+        name="Username"
+        v-model="username"
+        error="There is an error"
+      />
+      {{ username }}
+      <navbar />
+      <router-view />
+    </div>
   </section>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, computed, ref } from "vue"
 import Navbar from "@/components/Navbar.vue"
+import FormInput from "@/components/FormInput.vue"
 import { useModal } from "@/useModal"
 
 export default defineComponent({
   name: "App",
   components: {
     Navbar,
+    FormInput,
   },
 
   setup() {
     const modal = useModal()
+    const username = ref("username")
 
     const toggleModal = computed(() => {
       return {
@@ -37,6 +49,7 @@ export default defineComponent({
     return {
       toggleModal,
       hideModal,
+      username,
     }
   },
 })
