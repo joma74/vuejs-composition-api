@@ -25,17 +25,24 @@ class Store {
     return readonly(this.state)
   }
 
+  async createPost(post: Post) {
+    const response = await axios.post<Post>("/posts", post)
+    this.state.posts.ids.push(response.data.id)
+    this.state.posts.all.set(response.data.id, response.data)
+  }
+
   async fetchPosts() {
-    this.state.posts.loaded = false
-    const respones = await axios.get<Post[]>("/posts")
-    const postsState: PostState = deepClone(initialPosts)
-    for (const post of respones.data) {
-      // Use postState instead of this.state.posts as postsState is not reactive and hence more efficient.
-      postsState.ids.push(post.id)
-      postsState.all.set(post.id, post)
+    if (!this.state.posts.loaded) {
+      const respones = await axios.get<Post[]>("/posts")
+      const postsState: PostState = deepClone(initialPosts)
+      for (const post of respones.data) {
+        // Use postState instead of this.state.posts as postsState is not reactive and hence more efficient.
+        postsState.ids.push(post.id)
+        postsState.all.set(post.id, post)
+      }
+      postsState.loaded = true
+      this.state.posts = postsState
     }
-    postsState.loaded = true
-    this.state.posts = postsState
   }
 }
 
