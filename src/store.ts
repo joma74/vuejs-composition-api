@@ -1,7 +1,7 @@
 import { reactive, readonly } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
-import { today, thisWeek, thisMonth, Post } from "@/mock"
+import { Post } from "@/mock"
 import cloneDeep from "lodash/cloneDeep"
 
 interface State {
@@ -12,6 +12,12 @@ interface PostState {
   ids: string[]
   all: Map<string, Post>
   loaded: boolean
+}
+
+export interface User {
+  id: string
+  username: string
+  password: string
 }
 
 class Store {
@@ -29,6 +35,11 @@ class Store {
     const response = await axios.post<Post>("/posts", post)
     this.state.posts.ids.push(response.data.id)
     this.state.posts.all.set(response.data.id, response.data)
+  }
+
+  async createUser(user: User) {
+    console.log(user)
+    // const response = await axios.put<User>("/user", user)
   }
 
   async fetchPosts() {

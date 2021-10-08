@@ -1,5 +1,5 @@
 <template>
-  <form @submit="submit">
+  <form @submit.prevent="submit">
     <form-input
       name="Username"
       v-model="username"
@@ -11,6 +11,14 @@
       type="password"
       :error="passwordValidationStatus.message"
     />
+    <button
+      class="button is-primary"
+      :disabled="
+        !usernameValidationStatus.valid || !passwordValidationStatus.valid
+      "
+    >
+      Sign Up
+    </button>
   </form>
 </template>
 <script lang="ts">
@@ -19,6 +27,8 @@ import { required, length, Status, validate } from "@/validation"
 import { defineComponent, computed, ref } from "vue"
 
 import FormInput from "@/components/FormInput.vue"
+import { User, useStore } from "@/store"
+import { useModal } from "@/useModal"
 
 export default defineComponent({
   name: "Signup",
@@ -35,7 +45,26 @@ export default defineComponent({
       return validate(password.value, [required(), length({ min: 5, max: 25 })])
     })
 
-    const submit = (evt: Event) => {}
+    const store = useStore()
+    const modal = useModal()
+
+    const submit = async (evt: Event) => {
+      if (
+        !usernameValidationStatus.value.valid ||
+        !passwordValidationStatus.value.valid
+      ) {
+        return
+      }
+      const newUser: User = {
+        id: "-1",
+        username: username.value,
+        password: password.value,
+      }
+
+      await store.createUser(newUser)
+
+      modal.hideModal()
+    }
     return {
       username,
       usernameValidationStatus,
