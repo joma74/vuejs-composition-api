@@ -1,4 +1,4 @@
-import { reactive, readonly } from "vue"
+import { reactive, readonly, inject } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
@@ -72,11 +72,16 @@ const deepClone = <T>(obj: T): DeepWritable<T> => {
   return cloneDeep(obj) as DeepWritable<T>
 }
 
-const store = new Store(deepClone(initialState))
+export const storeKey = Symbol("store")
+export const store = new Store(deepClone(initialState))
 
 /**
  * use... for composables, later for provide/inject
  */
-export function useStore() {
-  return store
+export function useStore(): Store {
+  const _store = inject<Store>(storeKey)
+  if (!_store) {
+    throw Error("Did you forogot to call provide?")
+  }
+  return _store
 }
