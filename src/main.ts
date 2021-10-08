@@ -36,5 +36,5 @@ axios.post = async (url: string, post: Post) => {
 
 createApp(App)
   .use(router)
-  .provide(storeKey, store)
+  .use(store)
   .mount("#app")

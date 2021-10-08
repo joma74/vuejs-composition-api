@@ -1,4 +1,4 @@
-import { reactive, readonly, inject } from "vue"
+import { reactive, readonly, inject, App } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
@@ -25,6 +25,10 @@ class Store {
 
   constructor(initial: State) {
     this.state = reactive(initial)
+  }
+
+  install(app: App) {
+    app.provide(storeKey, store)
   }
 
   getState() {
