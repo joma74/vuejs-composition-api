@@ -127,24 +127,3 @@ See https://v3.vuejs.org/guide/component-basics.html#using-v-model-on-components
 >   `,
 > })
 > ```
-
-Or, somewhat more simple, as has been proven:
-Caller `App.vue`
-
-```ts
-<form-input v-model="username" name="Username" />
-```
-
-Callee `FormInput.vue`
-
-```ts
-...
-<input v-model="modelValue" />
-...
-props: {
-    modelValue: {
-      type: String,
-      required: true,
-    },
-}
-```
