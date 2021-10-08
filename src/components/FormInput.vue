@@ -9,7 +9,7 @@
         @input="updateModelValue"
       />
     </div>
-    <p class="is-danger help">{{ error }}</p>
+    <p class="is-danger help">{{ error ? error : "&nbsp;" }}</p>
   </div>
 </template>
 <script lang="ts">

@@ -12,7 +12,7 @@
       <form-input
         name="Username"
         v-model="username"
-        error="There is an error"
+        :error="usernameValdiationStatus.message"
       />
       {{ username }}
       <navbar />
@@ -26,6 +26,7 @@ import { defineComponent, computed, ref } from "vue"
 import Navbar from "@/components/Navbar.vue"
 import FormInput from "@/components/FormInput.vue"
 import { useModal } from "@/useModal"
+import { required, length, Status, validate } from "@/validation"
 
 export default defineComponent({
   name: "App",
@@ -37,6 +38,9 @@ export default defineComponent({
   setup() {
     const modal = useModal()
     const username = ref("username")
+    const usernameValdiationStatus = computed<Status>(() => {
+      return validate(username.value, [required(), length({ min: 5, max: 25 })])
+    })
 
     const toggleModal = computed(() => {
       return {
@@ -50,6 +54,7 @@ export default defineComponent({
       toggleModal,
       hideModal,
       username,
+      usernameValdiationStatus,
     }
   },
 })
