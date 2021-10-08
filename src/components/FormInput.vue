@@ -1,10 +1,12 @@
 <template>
   <div class="field">
-    <label for="" class="label" :name="name">{{ name }}</label>
+    <label :for="name" class="label">{{ name }}</label>
     <div class="control">
       <input
         class="input"
+        :id="name"
         :type="type"
+        :name="name"
         :value="modelValue"
         @input="updateModelValue"
       />
@@ -45,3 +47,4 @@ export default defineComponent({
   },
 })
 </script>
+<style scoped></style>
