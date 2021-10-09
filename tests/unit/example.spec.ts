@@ -1,6 +1,7 @@
 import { mount, flushPromises } from "@vue/test-utils"
 import Timeline from "@/components/Timeline.vue"
 import { today, thisWeek, thisMonth } from "@/mock"
+import { store, getInitialStoreCopy } from "@/store"
 
 /**
  * Note the () around the return function
@@ -14,18 +15,21 @@ jest.mock("axios", () => ({
 }))
 
 function mountTimeline() {
-  return mount({
+  const initialStoreCopy = getInitialStoreCopy()
+
+  const testComponent = {
     components: { Timeline },
     template: `
-          <suspense>
-              <template #default>
-                  <timeline/>
-              </template>
-              <template #fallback>
-                  Loading...
-              </template>
-          </suspense>`,
-  })
+              <suspense>
+                  <template #default>
+                      <timeline/>
+                  </template>
+                  <template #fallback>
+                      Loading...
+                  </template>
+              </suspense>`,
+  }
+  return mount(testComponent, { global: { plugins: [initialStoreCopy] } })
 }
 
 describe("Timeline.vue", () => {

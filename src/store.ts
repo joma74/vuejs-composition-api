@@ -20,7 +20,7 @@ export interface User {
   password: string
 }
 
-class Store {
+export class Store {
   private state: State
 
   constructor(initial: State) {
@@ -76,8 +76,12 @@ const deepClone = <T>(obj: T): DeepWritable<T> => {
   return cloneDeep(obj) as DeepWritable<T>
 }
 
+export const getInitialStoreCopy = () => {
+  return new Store(deepClone(initialState))
+}
+
 export const storeKey = Symbol("store")
-export const store = new Store(deepClone(initialState))
+export const store = getInitialStoreCopy()
 
 /**
  * use... for composables, later for provide/inject
