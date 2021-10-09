@@ -1,7 +1,7 @@
 import { mount, flushPromises } from "@vue/test-utils"
 import Timeline from "@/components/Timeline.vue"
 import { today, thisWeek, thisMonth } from "@/mock"
-import { store, getInitialStoreCopy } from "@/store"
+import { getInitialStoreCopy } from "@/store"
 
 /**
  * Note the () around the return function
