@@ -18,7 +18,7 @@ export default defineComponent({
     const newPost: Post = {
       id: "-1",
       title: "Enter your title here",
-      created: moment().subtract("second", 1),
+      created: moment().subtract(1, "second"),
     }
 
     const store = useStore()
