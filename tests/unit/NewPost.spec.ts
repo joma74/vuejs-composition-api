@@ -6,6 +6,10 @@ jest.mock("vue-router", () => ({
   useRouter: () => {},
 }))
 
+jest.mock("axios", () => ({
+  post: () => {},
+}))
+
 describe("New Post", () => {
   it("creates a post and redirects to /", async (done) => {
     let globalErrorSpy = jest.fn()
@@ -25,10 +29,30 @@ describe("New Post", () => {
     //
     expect(globalErrorSpy).toHaveBeenCalledTimes(1)
     //
-    let error: Error = globalErrorSpy.mock.calls[0][0]
-    expect(error).toBeInstanceOf(Error)
-    expect(error).toHaveProperty("message", "Network Error")
-    expect(globalErrorSpy.mock.calls[0][2]).toBe("component event handler")
+    expectNoErrorOccured(globalErrorSpy)
     done()
   })
 })
+
+function expectErrorOccured(
+  globalErrorSpy: jest.Mock<any, any>,
+  message?: string,
+  source?: string,
+) {
+  let error: Error = globalErrorSpy.mock.calls[0][0]
+  logError(error)
+  expect(error).toBeInstanceOf(Error)
+  if (message) expect(error).toHaveProperty("message", message)
+  if (source)
+    expect(globalErrorSpy.mock.calls[0][2]).toBe("component event handler")
+}
+
+function expectNoErrorOccured(globalErrorSpy: jest.Mock<any, any>) {
+  let error: Error = globalErrorSpy.mock.calls[0][0]
+  logError(error)
+  expect(error).toBeUndefined()
+}
+
+function logError(error: Error) {
+  error ? console.info("Vue' caught error is >> ", error) : () => {}
+}

@@ -155,3 +155,12 @@ it("it baz", async (done) => {
   done()
 })
 ```
+
+### How to debug jest test via vue-cli-service in vs code
+
+1. Open a Javascript Debug Terminal
+2. Run therein
+
+```
+node ./node_modules/.bin/vue-cli-service test:unit --runInBand
+```
