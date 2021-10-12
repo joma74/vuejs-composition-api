@@ -127,3 +127,31 @@ See https://v3.vuejs.org/guide/component-basics.html#using-v-model-on-components
 >   `,
 > })
 > ```
+
+### How to check for uncaught error in a vue component test?
+
+```ts
+it("it baz", async (done) => {
+  let globalErrorSpy = jest.fn()
+  ...
+  const wrapper = mount(NewPost, {
+    global: {
+      plugins: [initialStoreCopy],
+      config: { errorHandler: globalErrorSpy },
+    },
+  })
+  wrapper.find("[foo='bar'").trigger("click")
+  // needed!
+  await flushPromises()
+  // needed!
+  await new Promise((r) => setTimeout(r, 500))
+  //
+  expect(globalErrorSpy).toHaveBeenCalledTimes(1)
+  //
+  let error: Error = globalErrorSpy.mock.calls[0][0]
+  expect(error).toBeInstanceOf(Error)
+  expect(error).toHaveProperty("message", "Network Error")
+  expect(globalErrorSpy.mock.calls[0][2]).toBe("component event handler")
+  done()
+})
+```
