@@ -1,16 +1,24 @@
 import { mount, flushPromises } from "@vue/test-utils"
 import PostWriter from "@/components/PostWriter.vue"
 import { Post } from "@/mock"
+import { spyOnErrorHandler, expectNoErrorOccured } from "./jest.setup"
 
 describe("PostWriter.vue", () => {
   it("emits a save event with new post", async (done) => {
-    const wrapper = mount(PostWriter, {
-      props: {
-        post: {
-          title: "New title",
+    let errorSpy = jest.fn()
+    const wrapper = mount(
+      PostWriter,
+      spyOnErrorHandler(
+        {
+          props: {
+            post: {
+              title: "New title",
+            },
+          },
         },
-      },
-    })
+        errorSpy,
+      ),
+    )
 
     /**
      * Change title
@@ -46,7 +54,8 @@ describe("PostWriter.vue", () => {
       expect(_emittedPost.title).toBe("My new post")
       expect(_emittedPost.markdown).toBe("## New content")
       expect(_emittedPost.html).toBe('<h2 id="new-content">New content</h2>\n')
-      // Signal jest that we are done
+      //
+      expectNoErrorOccured(errorSpy)
       done()
     }, 300)
   })

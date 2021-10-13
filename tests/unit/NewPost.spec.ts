@@ -1,58 +1,47 @@
 import { config, mount, flushPromises } from "@vue/test-utils"
 import NewPost from "@/components/NewPost.vue"
 import { getInitialStoreCopy } from "@/store"
+import { spyOnErrorHandler, expectNoErrorOccured } from "./jest.setup"
 
 jest.mock("vue-router", () => ({
-  useRouter: () => {},
+  useRouter: () => {
+    return {
+      push: () => {},
+    }
+  },
 }))
 
 jest.mock("axios", () => ({
-  post: () => {},
+  post: (url: string, payload: any) => {
+    return {
+      data: payload,
+    }
+  },
 }))
 
 describe("New Post", () => {
   it("creates a post and redirects to /", async (done) => {
-    let globalErrorSpy = jest.fn()
+    let errorSpy = jest.fn()
 
     const initialStoreCopy = getInitialStoreCopy()
-    const wrapper = mount(NewPost, {
-      global: {
-        plugins: [initialStoreCopy],
-        config: { errorHandler: globalErrorSpy },
-      },
-    })
+    const wrapper = mount(
+      NewPost,
+      spyOnErrorHandler(
+        {
+          global: {
+            plugins: [initialStoreCopy],
+          },
+        },
+        errorSpy,
+      ),
+    )
     wrapper.find("[data-test='submitElement'").trigger("click")
     // needed!
     await flushPromises()
     // needed!
     await new Promise((r) => setTimeout(r, 500))
     //
-    expect(globalErrorSpy).toHaveBeenCalledTimes(1)
-    //
-    expectNoErrorOccured(globalErrorSpy)
+    expectNoErrorOccured(errorSpy)
     done()
   })
 })
-
-function expectErrorOccured(
-  globalErrorSpy: jest.Mock<any, any>,
-  message?: string,
-  source?: string,
-) {
-  let error: Error = globalErrorSpy.mock.calls[0][0]
-  logError(error)
-  expect(error).toBeInstanceOf(Error)
-  if (message) expect(error).toHaveProperty("message", message)
-  if (source)
-    expect(globalErrorSpy.mock.calls[0][2]).toBe("component event handler")
-}
-
-function expectNoErrorOccured(globalErrorSpy: jest.Mock<any, any>) {
-  let error: Error = globalErrorSpy.mock.calls[0][0]
-  logError(error)
-  expect(error).toBeUndefined()
-}
-
-function logError(error: Error) {
-  error ? console.info("Vue' caught error is >> ", error) : () => {}
-}
