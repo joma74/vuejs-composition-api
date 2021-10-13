@@ -7,12 +7,13 @@ import merge from "lodash/merge"
 export function spyOnErrorHandler(
   mountingOptions: MountingOptions<any, any>,
   errorSpy: jest.Mock<any, any>,
-) {
-  return merge(mountingOptions, {
+): MountingOptions<any, any> {
+  const mergedMountingOptions = merge(mountingOptions, {
     global: {
       config: { errorHandler: errorSpy },
     },
   })
+  return mergedMountingOptions
 }
 
 export function expectErrorOccured(
