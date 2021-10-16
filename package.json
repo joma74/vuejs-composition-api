@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test:unit:debug": "vue-cli-service test:unit --runInBand --no-cache --coverage false"
   },
   "dependencies": {
     "axios": "^0.22.0",

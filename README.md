@@ -162,5 +162,7 @@ it("it baz", async (done) => {
 2. Run therein
 
 ```
-node ./node_modules/.bin/vue-cli-service test:unit --runInBand
+node ./node_modules/.bin/vue-cli-service test:unit --runInBand --no-cache --coverage false
 ```
+
+P.S. `--no-cache` and `--coverage false` do provide better sourcemap compatibility.
