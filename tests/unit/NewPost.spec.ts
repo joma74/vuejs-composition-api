@@ -3,10 +3,14 @@ import NewPost from "@/components/NewPost.vue"
 import { store } from "@/store"
 import { spyOnErrorHandler, expectNoErrorOccured } from "./jest.setup"
 
+let routes: string[] = []
+
 jest.mock("vue-router", () => ({
   useRouter: () => {
     return {
-      push: () => {},
+      push: (route: string) => {
+        routes.push(route)
+      },
     }
   },
 }))
@@ -20,6 +24,10 @@ jest.mock("axios", () => ({
 }))
 
 describe("NewPost.vue", () => {
+  beforeEach(() => {
+    routes = []
+  })
+
   it("creates a post and redirects to /", async (done) => {
     let errorSpy = jest.fn()
 
@@ -45,6 +53,8 @@ describe("NewPost.vue", () => {
     await new Promise((r) => setTimeout(r, 500))
     //
     expect(store.getState().posts.ids).toHaveLength(1)
+    //
+    expect(routes).toEqual(["/"])
     //
     expectNoErrorOccured(errorSpy)
     done()
