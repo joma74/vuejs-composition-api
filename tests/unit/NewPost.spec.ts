@@ -1,7 +1,7 @@
 import { mount, flushPromises } from "@vue/test-utils"
 import NewPost from "@/components/NewPost.vue"
 import { store } from "@/store"
-import { spyOnErrorHandler, expectNoErrorOccured } from "./jest.setup"
+import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
 
 let routes: string[] = []
 
@@ -30,17 +30,19 @@ describe("NewPost.vue", () => {
 
   it("creates a post and redirects to /", async (done) => {
     let errorSpy = jest.fn()
+    let warnSpy = jest.fn()
 
     // const store = getInitialStoreCopy()
     const wrapper = mount(
       NewPost,
-      spyOnErrorHandler(
+      spyOnHandler(
         {
           global: {
             plugins: [store],
           },
         },
         errorSpy,
+        warnSpy,
       ),
     )
     //
@@ -56,7 +58,7 @@ describe("NewPost.vue", () => {
     //
     expect(routes).toEqual(["/"])
     //
-    expectNoErrorOccured(errorSpy)
+    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
     done()
   })
 })

@@ -4,13 +4,17 @@ import { MountingOptions } from "@vue/test-utils"
 
 import merge from "lodash/merge"
 
-export function spyOnErrorHandler(
+export function spyOnHandler(
   mountingOptions: MountingOptions<any, any>,
-  errorSpy: jest.Mock<any, any>,
+  errorSpy?: jest.Mock<any, any>,
+  warnSpy?: jest.Mock<any, any>,
 ): MountingOptions<any, any> {
   const mergedMountingOptions = merge(mountingOptions, {
     global: {
-      config: { errorHandler: errorSpy },
+      config: {
+        ...(errorSpy && { errorHandler: errorSpy }),
+        ...(warnSpy && { warnHandler: warnSpy }),
+      },
     },
   })
   return mergedMountingOptions
@@ -22,21 +26,54 @@ export function expectErrorOccured(
   message?: string,
   source?: string,
 ) {
-  let error: Error = errorSpy.mock.calls[0]?.[0]
+  expectOccured(errorSpy, expectHaveBeenCalledTimes, message, source)
+}
+
+export function expectWarnOccured(
+  warnSpy: jest.Mock<any, any>,
+  expectHaveBeenCalledTimes?: number,
+  message?: string,
+  source?: string,
+) {
+  expectOccured(warnSpy, expectHaveBeenCalledTimes, message, source)
+}
+
+function expectOccured(
+  spy: jest.Mock<any, any>,
+  expectHaveBeenCalledTimes?: number,
+  message?: string,
+  source?: string,
+) {
+  let error: Error = spy.mock.calls[0]?.[0]
   logError(error)
   expect(error).toBeInstanceOf(Error)
   if (expectHaveBeenCalledTimes)
-    expect(errorSpy).toHaveBeenCalledTimes(expectHaveBeenCalledTimes)
+    expect(spy).toHaveBeenCalledTimes(expectHaveBeenCalledTimes)
   if (message) expect(error).toHaveProperty("message", message)
-  if (source) expect(errorSpy.mock.calls[0][2]).toBe(source)
+  if (source) expect(spy.mock.calls[0][2]).toBe(source)
 }
 
-export function expectNoErrorOccured(errorSpy: jest.Mock<any, any>) {
-  let error: Error = errorSpy.mock.calls[0]?.[0]
-  if (error) logError(error)
-  expect(error).toBeUndefined()
+export function expectNoErrorOrWarnOccured(
+  errorSpy?: jest.Mock<any, any>,
+  warnSpy?: jest.Mock<any, any>,
+) {
+  let error: Error | undefined = undefined
+  let warn: Error | undefined = undefined
+  if (errorSpy) {
+    error = errorSpy.mock.calls[0]?.[0]
+    logError(error)
+  }
+  if (warnSpy) {
+    warn = warnSpy.mock.calls[0]?.[0]
+    logWarn(warn)
+  }
+  expect([error, warn]).toEqual([undefined, undefined])
 }
 
-function logError(error: Error) {
+function logError(error?: Error) {
   error ? console.info("Vue' caught error is >> ", error) : () => {}
+}
+
+function logWarn(error?: Error) {
+  error ? console.info("Vue' caught warn is >> ", error) : () => {}
 }

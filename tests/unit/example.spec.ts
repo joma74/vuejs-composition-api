@@ -2,7 +2,7 @@ import { mount, flushPromises } from "@vue/test-utils"
 import Timeline from "@/components/Timeline.vue"
 import { today, thisWeek, thisMonth } from "@/mock"
 import { getInitialStoreCopy } from "@/store"
-import { spyOnErrorHandler, expectNoErrorOccured } from "./jest.setup"
+import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
 
 /**
  * Note the () around the return function
@@ -15,7 +15,10 @@ jest.mock("axios", () => ({
   },
 }))
 
-function mountTimeline(errorSpy: jest.Mock<any, any>) {
+function mountTimeline(
+  errorSpy: jest.Mock<any, any>,
+  warnSpy: jest.Mock<any, any>,
+) {
   const initialStoreCopy = getInitialStoreCopy()
 
   const testComponent = {
@@ -32,27 +35,33 @@ function mountTimeline(errorSpy: jest.Mock<any, any>) {
   }
   return mount(
     testComponent,
-    spyOnErrorHandler({ global: { plugins: [initialStoreCopy] } }, errorSpy),
+    spyOnHandler(
+      { global: { plugins: [initialStoreCopy] } },
+      errorSpy,
+      warnSpy,
+    ),
   )
 }
 
 describe("Timeline.vue", () => {
   it("renders today post default", async (done) => {
     let errorSpy = jest.fn()
-    const wrapper = mountTimeline(errorSpy)
+    let warnSpy = jest.fn()
+    const wrapper = mountTimeline(errorSpy, warnSpy)
     // nextTick only flushes vue promises, flushPromises also flushes all other promises
     await flushPromises()
     // DEBUG
     // console.log(wrapper.html())
     expect(wrapper.html()).toContain(today.created.format("Do MMM"))
     //
-    expectNoErrorOccured(errorSpy)
+    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
     done()
   })
 
   it("update when the week period is clicked", async (done) => {
     let errorSpy = jest.fn()
-    const wrapper = mountTimeline(errorSpy)
+    let warnSpy = jest.fn()
+    const wrapper = mountTimeline(errorSpy, warnSpy)
     await flushPromises()
     // wait for the next frame, like so (1)
     await wrapper.get("[data-test='This Week'").trigger("click")
@@ -64,13 +73,14 @@ describe("Timeline.vue", () => {
     expect(wrapper.html()).toContain(today.created.format("Do MMM"))
     expect(wrapper.html()).toContain(thisWeek.created.format("Do MMM"))
     //
-    expectNoErrorOccured(errorSpy)
+    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
     done()
   })
 
   it("update when the month period is clicked", async (done) => {
     let errorSpy = jest.fn()
-    const wrapper = mountTimeline(errorSpy)
+    let warnSpy = jest.fn()
+    const wrapper = mountTimeline(errorSpy, warnSpy)
     // nextTick only flushes vue promises, flushPromises also flushes all other promises
     await flushPromises()
     // wait for the next frame, like so (1)
@@ -80,7 +90,7 @@ describe("Timeline.vue", () => {
     expect(wrapper.html()).toContain(thisWeek.created.format("Do MMM"))
     expect(wrapper.html()).toContain(thisMonth.created.format("Do MMM"))
     //
-    expectNoErrorOccured(errorSpy)
+    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
     done()
   })
 })
