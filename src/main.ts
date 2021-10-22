@@ -1,9 +1,9 @@
 import { createApp } from "vue"
 import App from "@/App.vue"
 import axios from "axios"
-import { today, thisWeek, thisMonth, Post } from "@/mock"
+import { today, thisWeek, thisMonth, Post, isAPost } from "@/mock"
 import { router } from "@/router"
-import { store } from "@/store"
+import { store, User, isAUser, Author } from "@/store"
 import random from "lodash/random.js"
 import "highlight.js/styles/atom-one-dark.css"
 
@@ -24,12 +24,24 @@ axios.get = async (url: string) => {
 }
 
 // @ts-ignore
-axios.post = async (url: string, post: Post) => {
-  if (url === "/posts") {
+axios.post = async (url: string, param: Post | User) => {
+  console.log(`axios post with ${JSON.stringify(param)}`)
+  if (url === "/posts" && isAPost(param)) {
     const id = random(100, 10000)
     await delay()
     return Promise.resolve({
-      data: { ...post, id },
+      data: { ...param, id },
+    })
+  }
+  if (url === "/users" && isAUser(param)) {
+    const id = random(100, 10000)
+    await delay()
+    const author: Author = {
+      id: id.toString(),
+      username: param.username,
+    }
+    return Promise.resolve({
+      data: author,
     })
   }
 }

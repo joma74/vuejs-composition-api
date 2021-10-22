@@ -4,20 +4,33 @@ import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
 import cloneDeep from "lodash/cloneDeep"
 
-interface State {
-  posts: PostState
-}
-
-interface PostState {
+interface BaseState<T> {
   ids: string[]
-  all: Map<string, Post>
+  all: Map<string, T>
   loaded: boolean
 }
+
+type PostState = BaseState<Post>
 
 export interface User {
   id: string
   username: string
   password: string
+}
+
+export function isAUser(obj: any): obj is User {
+  return obj.username !== undefined
+}
+
+export type Author = Omit<User, "password">
+
+interface AuthorState extends BaseState<Author> {
+  currentUserId: string | undefined
+}
+
+interface State {
+  posts: PostState
+  authors: AuthorState
 }
 
 export class Store {
@@ -42,8 +55,11 @@ export class Store {
   }
 
   async createUser(user: User) {
-    console.log(user)
-    // const response = await axios.put<User>("/user", user)
+    const response = await axios.post<User>("/users", user)
+    this.state.authors.ids.push(response.data.id)
+    this.state.authors.all.set(response.data.id, response.data)
+    this.state.authors.currentUserId = response.data.id
+    console.log(this.state.authors)
   }
 
   async fetchPosts() {
@@ -63,12 +79,20 @@ export class Store {
 
 const initialPosts = {
   ids: [],
-  all: new Map(),
+  all: new Map<string, Post>(),
   loaded: false,
 } as DeepReadonly<PostState>
 
+const initialAuthors = {
+  ids: [],
+  all: new Map<string, Author>(),
+  loaded: false,
+  currentUserId: undefined,
+} as DeepReadonly<AuthorState>
+
 const initialState = {
   posts: initialPosts,
+  authors: initialAuthors,
 } as DeepReadonly<State>
 
 const deepClone = <T>(obj: T): DeepWritable<T> => {

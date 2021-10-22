@@ -8,6 +8,10 @@ export interface Post {
   markdown?: string
 }
 
+export function isAPost(obj: any): obj is Post {
+  return obj.title !== undefined
+}
+
 export const today: Post = {
   id: "1",
   title: "Today",
