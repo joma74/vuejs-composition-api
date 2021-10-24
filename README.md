@@ -166,3 +166,7 @@ node ./node_modules/.bin/vue-cli-service test:unit --runInBand --no-cache --cove
 ```
 
 P.S. `--no-cache` and `--coverage false` do provide better sourcemap compatibility.
+
+### How to use an inject/provide object inside the router
+
+To receive the inject/provide object, the object must be an argument to a function, which is returning the so configured router. Essentially one must do function parameter binding.

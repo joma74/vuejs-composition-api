@@ -2,7 +2,7 @@ import { createApp } from "vue"
 import App from "@/App.vue"
 import axios from "axios"
 import { today, thisWeek, thisMonth, Post, isAPost } from "@/mock"
-import { router } from "@/router"
+import { routerWithStore } from "@/router"
 import { store, User, isAUser, Author } from "@/store"
 import random from "lodash/random.js"
 import "highlight.js/styles/atom-one-dark.css"
@@ -25,7 +25,13 @@ axios.get = async (url: string) => {
 
 // @ts-ignore
 axios.post = async (url: string, param: Post | User) => {
-  console.log(`axios post with ${JSON.stringify(param)}`)
+  console.debug(
+    `Processing axios post with: ${JSON.stringify(
+      param,
+      null,
+      2,
+    )} on url: >>${url}<<`,
+  )
   if (url === "/posts" && isAPost(param)) {
     const id = random(100, 10000)
     await delay()
@@ -47,6 +53,6 @@ axios.post = async (url: string, param: Post | User) => {
 }
 
 createApp(App)
-  .use(router)
+  .use(routerWithStore(store))
   .use(store)
   .mount("#app")

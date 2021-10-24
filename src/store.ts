@@ -59,7 +59,9 @@ export class Store {
     this.state.authors.ids.push(response.data.id)
     this.state.authors.all.set(response.data.id, response.data)
     this.state.authors.currentUserId = response.data.id
-    console.log(this.state.authors)
+    console.debug(
+      `Created user: ${JSON.stringify(this.state.authors, null, 2)}`,
+    )
   }
 
   async fetchPosts() {
