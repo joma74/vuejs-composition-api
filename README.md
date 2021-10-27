@@ -170,3 +170,14 @@ P.S. `--no-cache` and `--coverage false` do provide better sourcemap compatibili
 ### How to use an inject/provide object inside the router
 
 To receive the inject/provide object, the object must be an argument to a function, which is returning the so configured router. Essentially one must do function parameter binding.
+
+### useRoute/useRouter return undefined if called before/after an await
+
+See https://github.com/vuejs/vue-router-next/issues/257
+
+> In the following situation, useRoute will work because it's called before the await, while
+> useRouter will not work because it's called after the await.
+
+### How do you JSON.stringify an ES6 Map?
+
+See https://stackoverflow.com/a/56150320

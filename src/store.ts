@@ -2,6 +2,7 @@ import { reactive, readonly, inject, App } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
+import { replacer } from "@/main"
 import cloneDeep from "lodash/cloneDeep"
 
 interface BaseState<T> {
@@ -50,8 +51,11 @@ export class Store {
 
   async createPost(post: Post) {
     const response = await axios.post<Post>("/posts", post)
-    this.state.posts.ids.push(response.data.id)
     this.state.posts.all.set(response.data.id, response.data)
+    this.state.posts.ids.push(response.data.id)
+    console.debug(
+      `Created post: ${JSON.stringify(this.state.posts, replacer, 2)}`,
+    )
   }
 
   async createUser(user: User) {
@@ -60,7 +64,7 @@ export class Store {
     this.state.authors.all.set(response.data.id, response.data)
     this.state.authors.currentUserId = response.data.id
     console.debug(
-      `Created user: ${JSON.stringify(this.state.authors, null, 2)}`,
+      `Created user: ${JSON.stringify(this.state.authors, replacer, 2)}`,
     )
   }
 

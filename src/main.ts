@@ -28,27 +28,60 @@ axios.post = async (url: string, param: Post | User) => {
   console.debug(
     `Processing axios post with: ${JSON.stringify(
       param,
-      null,
+      replacer,
       2,
     )} on url: >>${url}<<`,
   )
   if (url === "/posts" && isAPost(param)) {
     const id = random(100, 10000)
     await delay()
-    return Promise.resolve({
-      data: { ...param, id },
+    const post: Post = {
+      ...param,
+      id: id.toString(),
+    }
+    return Promise.resolve<{ data: Post }>({
+      data: post,
     })
   }
   if (url === "/users" && isAUser(param)) {
     const id = random(100, 10000)
     await delay()
     const author: Author = {
-      id: id.toString(),
       username: param.username,
+      id: id.toString(),
     }
-    return Promise.resolve({
+    return Promise.resolve<{ data: Author }>({
       data: author,
     })
+  }
+  return Promise.reject(
+    new Error(
+      `Missing handler for ${JSON.stringify(
+        param,
+        replacer,
+        2,
+      )} on url: >>${url}<<`,
+    ),
+  )
+}
+
+/**
+ * See https://stackoverflow.com/a/56150320
+ *
+ * JSON stringify replacer function for maps. A function that transforms the results.
+ * @param this
+ * @param key
+ * @param value
+ * @returns
+ */
+export function replacer(this: any, key: string, value: any) {
+  if (value instanceof Map) {
+    return {
+      dataType: "Map",
+      value: Array.from(value.entries()), // or with spread: value: [...value]
+    }
+  } else {
+    return value
   }
 }
 
