@@ -1,4 +1,4 @@
-import { mount, flushPromises } from "@vue/test-utils"
+import { mount } from "@vue/test-utils"
 import PostWriter from "@/components/PostWriter.vue"
 import { Post } from "@/mock"
 import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
