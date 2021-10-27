@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils"
 import ShowPost from "@/components/ShowPost.vue"
+import { store } from "@/store"
 import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
 
 describe("ShowPost", () => {
@@ -17,10 +18,8 @@ describe("ShowPost", () => {
       ShowPost,
       spyOnHandler(
         {
-          props: {
-            post: {
-              title: "New title",
-            },
+          global: {
+            plugins: [store],
           },
         },
         errorSpy,

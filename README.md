@@ -181,3 +181,26 @@ See https://github.com/vuejs/vue-router-next/issues/257
 ### How do you JSON.stringify an ES6 Map?
 
 See https://stackoverflow.com/a/56150320
+
+### Fix 'SyntaxError: Unexpected identifier'
+
+Cause was a cyclic dependency(main<.ts <-> store.ts) which eneded up in this test havoc. Extracted function to utils.ts, which is ok.
+
+### Failed to resolve component: router-link
+
+Add
+
+```
+...
+    global: {
+        ...
+        components: {
+            // Fixes "Failed to resolve component: router-link"
+                RouterLink: {
+                template: `<div></div>`,
+            },
+    },
+    ...
+```
+
+to MountingOptions.

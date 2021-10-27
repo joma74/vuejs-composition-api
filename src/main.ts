@@ -4,6 +4,7 @@ import axios from "axios"
 import { today, thisWeek, thisMonth, Post, isAPost } from "@/mock"
 import { routerWithStore } from "@/router"
 import { store, User, isAUser, Author } from "@/store"
+import { replacer } from "@/utils"
 import random from "lodash/random.js"
 import "highlight.js/styles/atom-one-dark.css"
 
@@ -63,26 +64,6 @@ axios.post = async (url: string, param: Post | User) => {
       )} on url: >>${url}<<`,
     ),
   )
-}
-
-/**
- * See https://stackoverflow.com/a/56150320
- *
- * JSON stringify replacer function for maps. A function that transforms the results.
- * @param this
- * @param key
- * @param value
- * @returns
- */
-export function replacer(this: any, key: string, value: any) {
-  if (value instanceof Map) {
-    return {
-      dataType: "Map",
-      value: Array.from(value.entries()), // or with spread: value: [...value]
-    }
-  } else {
-    return value
-  }
 }
 
 createApp(App)

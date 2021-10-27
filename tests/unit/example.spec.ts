@@ -36,7 +36,17 @@ function mountTimeline(
   return mount(
     testComponent,
     spyOnHandler(
-      { global: { plugins: [initialStoreCopy] } },
+      {
+        global: {
+          plugins: [initialStoreCopy],
+          components: {
+            // Fixes "Failed to resolve component: router-link"
+            RouterLink: {
+              template: `<div></div>`,
+            },
+          },
+        },
+      },
       errorSpy,
       warnSpy,
     ),

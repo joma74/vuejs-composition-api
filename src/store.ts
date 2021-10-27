@@ -2,7 +2,7 @@ import { reactive, readonly, inject, App } from "vue"
 import axios from "axios"
 import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
-import { replacer } from "@/main"
+import { replacer } from "@/utils"
 import cloneDeep from "lodash/cloneDeep"
 
 interface BaseState<T> {
