@@ -42,7 +42,7 @@ export class Store {
   }
 
   install(app: App) {
-    app.provide(storeKey, store)
+    app.provide(storeKey, this)
   }
 
   getState() {
