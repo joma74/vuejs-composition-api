@@ -219,3 +219,12 @@ Add
 ```
 
 to MountingOptions.
+
+### Setup vue router in unit test
+
+```
+const router = ...
+router.push(`/posts/${today.id}`)
+// Returns a Promise that resolves when the router has completed the initial navigation
+await router.isReady()
+```
