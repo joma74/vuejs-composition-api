@@ -26,7 +26,18 @@ yarn build
 yarn test:unit
 ```
 
-## Findings
+## Unresolved Findings
+
+### Sourcemap in unit tests does not work
+
+- No stop at some breakpoints
+- Sometime "steps out" from ts code into cjs.js code e.g. `runtime-core.cjs.js`
+
+### Console output in jest test is sometimes not shown
+
+TBD
+
+## Resolved Findings
 
 ### @/ as replacement for ./src
 
