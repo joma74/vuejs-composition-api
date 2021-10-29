@@ -69,10 +69,7 @@ export function expectNoErrorOrWarnOccured(
     logWarnCallParam(warnCallParams)
   }
   // !!! errorCallParams as expected gives indefinite recursion in jest print; @ReactTestComponent#serialize
-  expect([
-    errorCallParams === undefined,
-    warnCallParams === undefined,
-  ]).toEqual([true, true])
+  expect([errorCallParams?.length, warnCallParams?.length]).toEqual([0, 0])
 }
 
 function logErrorCallParam(errorCallParams?: [[Error, any, string]]) {
