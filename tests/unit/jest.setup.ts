@@ -1,7 +1,8 @@
 // See https://spin.atomicobject.com/2020/01/30/jest-add-custom-functions/
 
 import { MountingOptions } from "@vue/test-utils"
-
+import { Component } from "@vue/runtime-core"
+import chalk from "chalk"
 import merge from "lodash/merge"
 
 export function spyOnHandler(
@@ -57,8 +58,8 @@ export function expectNoErrorOrWarnOccured(
   errorSpy?: jest.Mock<any, any>,
   warnSpy?: jest.Mock<any, any>,
 ) {
-  let errorCallParams: [[Error, any, string]] | undefined = undefined
-  let warnCallParams: [[string, any, string]] | undefined = undefined
+  let errorCallParams: [[Error, Component, string]] | undefined = undefined
+  let warnCallParams: [[string, Component, string]] | undefined = undefined
   if (errorSpy) {
     errorCallParams = errorSpy.mock.calls as [[Error, any, string]]
     logErrorCallParam(errorCallParams)
@@ -67,7 +68,7 @@ export function expectNoErrorOrWarnOccured(
     warnCallParams = warnSpy.mock.calls as [[string, any, string]]
     logWarnCallParam(warnCallParams)
   }
-  // !!! errorCallParams as expected gives indefinite recursion in jest print
+  // !!! errorCallParams as expected gives indefinite recursion in jest print; @ReactTestComponent#serialize
   expect([
     errorCallParams === undefined,
     warnCallParams === undefined,
@@ -88,10 +89,14 @@ function logWarnCallParam(warnCallParams?: [[string, any, string]]) {
     : () => {}
 }
 
-function logError(error?: Error, stack?: string) {
-  console.info(`Vue' caught error is >> ${error} \n${stack}`)
+function logError(error?: Error, _location?: string) {
+  console.info(
+    chalk.red(
+      `Vue' caught error is >> ${error?.stack}\nlocated at >> ${_location}`,
+    ),
+  )
 }
 
 function logWarn(msg?: string, stack?: string) {
-  console.info(`Vue' caught warn is >> ${msg} \n${stack}`)
+  console.info(chalk.yellow(`Vue' caught warn is >> ${msg}\n${stack}`))
 }

@@ -37,6 +37,10 @@ yarn test:unit
 
 TBD
 
+### Adding a vue component to jest expect gives endless recursion
+
+`expect([errorCallParams: [Error, (Vue)Component, string]]...`
+
 ## Resolved Findings
 
 ### @/ as replacement for ./src
