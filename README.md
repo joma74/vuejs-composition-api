@@ -84,6 +84,8 @@ See
 - https://github.com/johnsoncodehk/volar, "Define Global Components"
 - https://github.com/johnsoncodehk/volar/issues/547#issuecomment-932773344
 
+My take at [shims-volar.d.ts](./src/shims-volar.d.ts)
+
 ### Where is `this.$options` gone?
 
 See https://v3.vuejs.org/api/composition-api.html#getcurrentinstance
@@ -93,7 +95,7 @@ import { getCurrentInstance } from "vue"
 console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
 ```
 
-### What does `[Vue warn]: Extraneous non-emits...` mean
+### What does `[Vue warn]: Extraneous non-emits...` mean?
 
 ```
 runtime-core.esm-bundler.js:6551 [Vue warn]: Extraneous non-emits event listeners (save) were passed to component but could not be automatically inherited because component renders fragment or text root nodes. If the listener is intended to be a component custom event listener only, declare it using the "emits" option.
@@ -112,13 +114,13 @@ See https://v3.vuejs.org/guide/migration/v-model.html
 
 See https://v3.vuejs.org/guide/component-basics.html#using-v-model-on-components
 
-> ```ts
+> ```xhtml
 > <custom-input v-model="searchText" />
 > ```
 >
 > When used on a component, v-model instead does this:
 >
-> ```ts
+> ```xhtml
 > <custom-input
 >   :model-value="searchText"
 >   @update:model-value="searchText = $event"
@@ -143,32 +145,40 @@ See https://v3.vuejs.org/guide/component-basics.html#using-v-model-on-components
 > })
 > ```
 
-### How to check for uncaught error in a vue component test?
+### How to check for uncaught error and warnings in a vue component test?
+
+My take at [jest.d.ts](./tests/unit/jest.setup.ts)
+
+Usage:
 
 ```ts
-it("it baz", async (done) => {
-  let globalErrorSpy = jest.fn()
-  ...
-  const wrapper = mount(NewPost, {
-    global: {
-      plugins: [initialStoreCopy],
-      config: { errorHandler: globalErrorSpy },
-    },
-  })
-  wrapper.find("[foo='bar'").trigger("click")
-  // needed!
-  await flushPromises()
-  // needed!
-  await new Promise((r) => setTimeout(r, 500))
-  //
-  expect(globalErrorSpy).toHaveBeenCalledTimes(1)
-  //
-  let error: Error = globalErrorSpy.mock.calls[0][0]
-  expect(error).toBeInstanceOf(Error)
-  expect(error).toHaveProperty("message", "Network Error")
-  expect(globalErrorSpy.mock.calls[0][2]).toBe("component event handler")
-  done()
-})
+import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
+
+describe("ATestSuite", () => {
+    let errorSpy: jest.Mock<any, any>
+    let warnSpy: jest.Mock<any, any>
+
+    beforeEach(() => {
+        errorSpy = jest.fn()
+        warnSpy = jest.fn()
+    })
+    it("ATest", async (done) => {
+        const wrapper = mount(
+            spyOnHandler(
+                {
+                    global: {
+                        plugins: [store, router],
+                    },
+                },
+                errorSpy,
+                warnSpy,
+            ),
+        )
+        //
+        expectNoErrorOrWarnOccured(errorSpy, warnSpy)
+        done()
+    }
+}
 ```
 
 ### How to debug jest test via vue-cli-service in vs code
@@ -197,15 +207,17 @@ See https://github.com/vuejs/vue-router-next/issues/257
 
 See https://stackoverflow.com/a/56150320
 
+My take at [utils.ts](./src/utils.ts).
+
 ### Fix 'SyntaxError: Unexpected identifier'
 
-Cause was a cyclic dependency(main<.ts <-> store.ts) which eneded up in this test havoc. Extracted function to utils.ts, which is ok.
+Cause was a cyclic dependency(main<.ts <-> store.ts) which eneded up in this test havoc. Extracted function to [utils.ts](./src/utils.ts), which is ok.
 
 ### Failed to resolve component: router-link
 
 Add
 
-```
+```ts
 ...
     global: {
         ...
@@ -222,7 +234,7 @@ to MountingOptions.
 
 ### Setup vue router in unit test
 
-```
+```ts
 const router = ...
 router.push(`/posts/${today.id}`)
 // Returns a Promise that resolves when the router has completed the initial navigation
