@@ -57,23 +57,41 @@ export function expectNoErrorOrWarnOccured(
   errorSpy?: jest.Mock<any, any>,
   warnSpy?: jest.Mock<any, any>,
 ) {
-  let error: Error | undefined = undefined
-  let warn: Error | undefined = undefined
+  let errorCallParams: [[Error, any, string]] | undefined = undefined
+  let warnCallParams: [[string, any, string]] | undefined = undefined
   if (errorSpy) {
-    error = errorSpy.mock.calls[0]?.[0]
-    logError(error)
+    errorCallParams = errorSpy.mock.calls as [[Error, any, string]]
+    logErrorCallParam(errorCallParams)
   }
   if (warnSpy) {
-    warn = warnSpy.mock.calls[0]?.[0]
-    logWarn(warn)
+    warnCallParams = warnSpy.mock.calls as [[string, any, string]]
+    logWarnCallParam(warnCallParams)
   }
-  expect([error, warn]).toEqual([undefined, undefined])
+  // !!! errorCallParams as expected gives indefinite recursion in jest print
+  expect([
+    errorCallParams === undefined,
+    warnCallParams === undefined,
+  ]).toEqual([true, true])
 }
 
-function logError(error?: Error) {
-  error ? console.info("Vue' caught error is >> ", error) : () => {}
+function logErrorCallParam(errorCallParams?: [[Error, any, string]]) {
+  errorCallParams
+    ? errorCallParams.forEach((itemTuple) =>
+        logError(itemTuple[0], itemTuple[2]),
+      )
+    : () => {}
 }
 
-function logWarn(error?: Error) {
-  error ? console.info("Vue' caught warn is >> ", error) : () => {}
+function logWarnCallParam(warnCallParams?: [[string, any, string]]) {
+  warnCallParams
+    ? warnCallParams.forEach((itemTuple) => logWarn(itemTuple[0], itemTuple[2]))
+    : () => {}
+}
+
+function logError(error?: Error, stack?: string) {
+  console.info(`Vue' caught error is >> ${error} \n${stack}`)
+}
+
+function logWarn(msg?: string, stack?: string) {
+  console.info(`Vue' caught warn is >> ${msg} \n${stack}`)
 }
