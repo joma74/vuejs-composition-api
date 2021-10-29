@@ -3,6 +3,7 @@
     v-if="canEdit"
     :to="`/posts/${post.id}/edit`"
     class="button is-link is-rounded"
+    data-test="can-edit"
     >Edit</router-link
   >
   <h1>{{ post.title }}</h1></template
@@ -12,6 +13,7 @@
 import { defineComponent, computed, inject } from "@vue/runtime-core"
 import { useRoute } from "vue-router"
 import { useStore } from "@/store"
+import { replacer } from "@/utils"
 
 export default defineComponent({
   async setup() {
@@ -22,6 +24,7 @@ export default defineComponent({
     if (!store.getState().posts.loaded) {
       await store.fetchPosts()
     }
+
     const post = store.getState().posts.all.get(id)
 
     if (!post) {
