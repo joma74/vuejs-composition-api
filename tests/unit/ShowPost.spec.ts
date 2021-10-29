@@ -36,12 +36,6 @@ describe("ShowPost", () => {
     //
     const wrapper = mount(
       ShowPost,
-      //   {
-      //     global: {
-      //       plugins: [store, router],
-      //     },
-      //   },
-
       spyOnHandler(
         {
           global: {
@@ -85,12 +79,6 @@ describe("ShowPost", () => {
     //
     const wrapper = mount(
       ShowPost,
-      //   {
-      //     global: {
-      //       plugins: [store, router],
-      //     },
-      //   },
-
       spyOnHandler(
         {
           global: {
@@ -132,12 +120,6 @@ describe("ShowPost", () => {
     //
     const wrapper = mount(
       ShowPost,
-      //   {
-      //     global: {
-      //       plugins: [store, router],
-      //     },
-      //   },
-
       spyOnHandler(
         {
           global: {
