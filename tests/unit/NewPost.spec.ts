@@ -67,8 +67,8 @@ describe("NewPost.vue", () => {
     )
     //
     expect(store.getState().posts.ids).toHaveLength(0)
-    //
-    wrapper.find("[data-test='submitElement'").trigger("click")
+    // trigger submit button
+    await wrapper.find("[data-test='submitElement'").trigger("click")
     // needed!
     await flushPromises()
     //

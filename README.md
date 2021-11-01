@@ -244,3 +244,23 @@ router.push(`/posts/${today.id}`)
 // Returns a Promise that resolves when the router has completed the initial navigation
 await router.isReady()
 ```
+
+### vue-test-utils in async mode - what must be awaited
+
+See https://vue-test-utils.vuejs.org/guides/testing-async-components.html
+
+> Updates applied by Vue
+> Vue batches pending DOM updates and applies them asynchronously to prevent unnecessary re-renders caused by multiple data mutations.
+>
+> You can read more about asynchronous updates in the Vue docs
+>
+> In practice, this means that after mutating a reactive property, to assert that change your test has to wait while Vue is performing updates. <em>One way is to use await Vue.nextTick(), <strong>but an easier and cleaner way is to just await the method that you mutated the state with, like trigger</strong></em>.
+>
+> Methods that can be awaited are:
+>
+> - setData
+> - setValue
+> - setChecked
+> - setSelected
+> - setProps
+> - trigger
