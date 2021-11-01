@@ -247,14 +247,16 @@ await router.isReady()
 
 ### vue-test-utils in async mode - what must be awaited
 
-See https://vue-test-utils.vuejs.org/guides/testing-async-components.html
+See https://vue-test-utils.vuejs.org/guides/testing-async-components.html#updates-applied-by-vue
 
 > Updates applied by Vue
 > Vue batches pending DOM updates and applies them asynchronously to prevent unnecessary re-renders caused by multiple data mutations.
 >
 > You can read more about asynchronous updates in the Vue docs
 >
-> In practice, this means that after mutating a reactive property, to assert that change your test has to wait while Vue is performing updates. <em>One way is to use await Vue.nextTick(), <strong>but an easier and cleaner way is to just await the method that you mutated the state with, like trigger</strong></em>.
+> In practice, this means that after mutating a reactive property, to assert that change your test has to wait while Vue is performing updates.
+>
+> <em>One way is to use await Vue.nextTick(), <strong>but an easier and cleaner way is to just await the method that you mutated the state with, like trigger</strong></em>.
 >
 > Methods that can be awaited are:
 >
@@ -264,3 +266,12 @@ See https://vue-test-utils.vuejs.org/guides/testing-async-components.html
 > - setSelected
 > - setProps
 > - trigger
+
+See https://vue-test-utils.vuejs.org/guides/testing-async-components.html#why-not-just-await-button-trigger
+
+> Why not just await button.trigger() ?
+> As explained above, there is a difference between the time it takes for Vue to update its components, and the time it takes for a Promise, like the one from axios to resolve.
+>
+> - <em>A nice rule to follow is to always await on mutations like trigger or setProps</em>.
+>
+> - <em>If your code relies on something async, like calling axios, <strong>add an await to the flushPromises call as well</strong></em>.
