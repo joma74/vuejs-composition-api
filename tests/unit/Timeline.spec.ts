@@ -52,8 +52,14 @@ function mountTimeline(
         global: {
           plugins: [store],
           components: {
-            // Fixes "Failed to resolve component: router-link" ADD renders content of router-link
+            // Fixes "Failed to resolve component: router-link" AND renders content of router-link, BUT NOT to
+            // gives `<div class="is-flex is-flex-direction-column is-align-items-flex-start"><a>Today</a><div>1st Nov</div></div>`
             RouterLink: RouterLinkStub,
+            // Fixes "Failed to resolve component: router-link" AND renders to attribute, BUT NOT content of router-link
+            // gives `<div to="/posts/1" class="panel-block"></div>`
+            // RouterLink: {
+            //   template: `<div></div>`,
+            // },
           },
         },
       },
