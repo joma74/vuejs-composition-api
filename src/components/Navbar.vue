@@ -6,7 +6,9 @@
         <button class="button" @click="signOut">Sign Out</button>
       </div>
       <div class="buttons" v-else>
-        <button class="button" @click="signUp">Sign Up</button>
+        <button class="button" @click="signUp" data-test="sign-up">
+          Sign Up
+        </button>
         <button class="button" @click="signIn">Sign In</button>
       </div>
     </div>

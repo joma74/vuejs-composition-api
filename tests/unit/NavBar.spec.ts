@@ -1,18 +1,41 @@
 import { mount, flushPromises, DOMWrapper } from "@vue/test-utils"
 import Navbar from "@/components/Navbar.vue"
 import Signup from "@/components/Signup.vue"
-import { store } from "@/store"
+import { Store } from "@/store"
 import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
 
 describe("Navbar", () => {
-  it("shows a signup modal via teleport", async (done) => {
-    let errorSpy = jest.fn()
-    let warnSpy = jest.fn()
+  let errorSpy: jest.Mock<any, any>
+  let warnSpy: jest.Mock<any, any>
 
+  beforeEach(() => {
+    errorSpy = jest.fn()
+    warnSpy = jest.fn()
+  })
+
+  afterEach(() => {
+    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
+  })
+
+  it("shows a signup modal via teleport", async (done) => {
+    const store = new Store({
+      posts: {
+        ids: [],
+        all: new Map(),
+        loaded: false,
+      },
+      authors: {
+        ids: ["100"],
+        all: new Map(),
+        loaded: false,
+        currentUserId: undefined,
+      },
+    })
+    // make bogus modal element
     const el = document.createElement("div")
     el.id = "modal"
     document.body.appendChild(el)
-
+    //
     const wrapper = mount(
       Navbar,
       spyOnHandler(
@@ -33,7 +56,8 @@ describe("Navbar", () => {
         warnSpy,
       ),
     )
-
+    // trigger sign up button
+    await wrapper.get("[data-test='sign-up'").trigger("click")
     // does not work -> wrapper.get("form")
     const form = wrapper.getComponent(Signup)
 
@@ -54,7 +78,6 @@ describe("Navbar", () => {
     //
     await form.trigger("submit.prevent")
     //
-    expectNoErrorOrWarnOccured(errorSpy, warnSpy)
     done()
   })
 })
