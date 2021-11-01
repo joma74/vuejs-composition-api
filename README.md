@@ -162,6 +162,11 @@ describe("ATestSuite", () => {
         errorSpy = jest.fn()
         warnSpy = jest.fn()
     })
+
+    afterEach(() => {
+        expectNoErrorOrWarnOccured(errorSpy, warnSpy)
+    })
+
     it("ATest", async (done) => {
         const wrapper = mount(
             spyOnHandler(
@@ -175,7 +180,6 @@ describe("ATestSuite", () => {
             ),
         )
         //
-        expectNoErrorOrWarnOccured(errorSpy, warnSpy)
         done()
     }
 }

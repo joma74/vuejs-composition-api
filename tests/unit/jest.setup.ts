@@ -9,7 +9,23 @@ export function spyOnHandler(
   mountingOptions: MountingOptions<any, any>,
   errorSpy?: jest.Mock<any, any>,
   warnSpy?: jest.Mock<any, any>,
+  logImmediatelyOnError = false,
+  reThrowImmediatelyOnError = true,
 ): MountingOptions<any, any> {
+  if (errorSpy !== undefined) {
+    errorSpy.mockName("error spy")
+    if (logImmediatelyOnError || reThrowImmediatelyOnError) {
+      errorSpy.mockImplementation(
+        (err: Error, component: Component, errorInfo: string) => {
+          if (logImmediatelyOnError) logError(err, errorInfo)
+          if (reThrowImmediatelyOnError) throw err
+        },
+      )
+    }
+  }
+  if (warnSpy !== undefined) {
+    warnSpy.mockName("error spy")
+  }
   const mergedMountingOptions = merge(mountingOptions, {
     global: {
       config: {
