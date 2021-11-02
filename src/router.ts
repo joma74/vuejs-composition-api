@@ -12,7 +12,11 @@ import EditPost from "@/components/EditPost.vue"
  */
 export function routerWithStore(store: Store) {
   const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(
+      process.env.NODE_ENV === "production"
+        ? "/vuejs-composition-api"
+        : undefined,
+    ),
     routes: [
       { path: "/", component: Home },
       {

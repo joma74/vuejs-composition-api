@@ -2,6 +2,8 @@
  * @type {import('@vue/cli-service').ProjectOptions}
  */
 module.exports = {
+  publicPath:
+    process.env.NODE_ENV === "production" ? "/vuejs-composition-api" : "/",
   // See https://github.com/vuejs/vue-cli/issues/2978#issuecomment-441511019
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === "development") {
