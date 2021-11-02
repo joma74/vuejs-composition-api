@@ -1,19 +1,24 @@
 <template
-  ><router-link
-    v-if="canEdit"
-    :to="`/posts/${post.id}/edit`"
-    class="button is-link is-rounded"
-    data-test="can-edit"
-    >Edit</router-link
-  >
-  <h1>{{ post.title }}</h1></template
->
+  ><div class="columns">
+    <div class="column"></div>
+    <div class="column is-two-thirds">
+      <router-link
+        v-if="canEdit"
+        :to="`/posts/${post.id}/edit`"
+        class="button is-link is-rounded"
+        data-test="can-edit"
+        >Edit</router-link
+      >
+      <h1>{{ post.title }}</h1>
+      <div v-html="post.html" class="markdownHtmlElement"></div>
+    </div>
+    <div class="column"></div></div
+></template>
 
 <script lang="ts">
 import { defineComponent, computed, inject } from "@vue/runtime-core"
 import { useRoute } from "vue-router"
 import { useStore } from "@/store"
-import { replacer } from "@/utils"
 
 export default defineComponent({
   async setup() {
@@ -40,3 +45,27 @@ export default defineComponent({
   },
 })
 </script>
+
+<style scoped>
+.markdownHtmlElement::v-deep ul {
+  list-style: revert;
+  list-style-position: inside;
+}
+.markdownHtmlElement::v-deep h1,
+.markdownHtmlElement::v-deep h2,
+.markdownHtmlElement::v-deep h3,
+.markdownHtmlElement::v-deep h4,
+.markdownHtmlElement::v-deep h5,
+.markdownHtmlElement::v-deep h6 {
+  font-size: revert;
+  margin: 10px 0 !important;
+}
+
+.markdownHtmlElement::v-deep pre {
+  margin: 10px 0 !important;
+}
+
+.markdownHtmlElement::v-deep p {
+  margin: 10px 0;
+}
+</style>

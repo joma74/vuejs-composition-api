@@ -275,3 +275,61 @@ See https://vue-test-utils.vuejs.org/guides/testing-async-components.html#why-no
 > - <em>A nice rule to follow is to always await on mutations like trigger or setProps</em>.
 >
 > - <em>If your code relies on something async, like calling axios, <strong>add an await to the flushPromises call as well</strong></em>.
+
+### Component's scoped style does not pierce through to marked.js content
+
+Bulma.css resets quite some of user agent styles. This pierces to marked.js rendered content, e.g. `list-style` is `none`. Despite the component having scoped styles, the marked.js rendered content is not within the component's scope. Hence not getting the vue generated scopeId e.g. `<div class="column" data-v-2f5679e3>`. This relates to the generated style html header
+
+```css
+<style type="text/css">
+ul[data-v-2f5679e3] {
+  list-style: revert;
+  list-style-position: inside;
+}
+h1[data-v-2f5679e3],
+h2[data-v-2f5679e3],
+h3[data-v-2f5679e3],
+h4[data-v-2f5679e3],
+h5[data-v-2f5679e3],
+h6[data-v-2f5679e3] {
+  font-size: revert;
+  margin: 10px 0 !important;
+}
+pre[data-v-2f5679e3] {
+  margin: 10px 0 !important;
+}
+p[data-v-2f5679e3] {
+  margin: 10px 0;
+}
+</style>
+```
+
+Solution is working with CSS child selectors. See https://vue-loader.vuejs.org/guide/scoped-css.html#deep-selectors on how to make the scopeId generated in the appropriate slot.
+
+```html
+<div
+  v-html="markdownHtmlContent"
+  data-test="markdownHtmlElement"
+  class="markdownHtmlElement"
+></div>
+```
+
+```css
+<style scoped>
+.markdownHtmlElement::v-deep ul {
+  list-style: revert;
+  list-style-position: inside;
+}
+...
+```
+
+Generates
+
+```css
+<style type="text/css">
+.markdownHtmlElement[data-v-2f5679e3] ul {
+  list-style: revert;
+  list-style-position: inside;
+}
+...
+```
