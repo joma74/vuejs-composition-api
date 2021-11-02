@@ -4,6 +4,7 @@
 module.exports = {
   publicPath:
     process.env.NODE_ENV === "production" ? "/vuejs-composition-api" : "/",
+  outputDir: "docs",
   // See https://github.com/vuejs/vue-cli/issues/2978#issuecomment-441511019
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === "development") {
