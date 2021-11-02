@@ -163,25 +163,25 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.markdownHtmlElement::v-deep ul {
+.markdownHtmlElement:deep(ul) {
   list-style: revert;
   list-style-position: inside;
 }
-.markdownHtmlElement::v-deep h1,
-.markdownHtmlElement::v-deep h2,
-.markdownHtmlElement::v-deep h3,
-.markdownHtmlElement::v-deep h4,
-.markdownHtmlElement::v-deep h5,
-.markdownHtmlElement::v-deep h6 {
+.markdownHtmlElement:deep(h1),
+.markdownHtmlElement:deep(h2),
+.markdownHtmlElement:deep(h3),
+.markdownHtmlElement:deep(h4),
+.markdownHtmlElement:deep(h5),
+.markdownHtmlElement:deep(h6) {
   font-size: revert;
   margin: 10px 0 !important;
 }
 
-.markdownHtmlElement::v-deep pre {
+.markdownHtmlElement:deep(pre) {
   margin: 10px 0 !important;
 }
 
-.markdownHtmlElement::v-deep p {
+.markdownHtmlElement:deep(p) {
   margin: 10px 0;
 }
 </style>
