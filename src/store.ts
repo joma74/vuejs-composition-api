@@ -29,7 +29,7 @@ interface AuthorState extends BaseState<Author> {
   currentUserId: string | undefined
 }
 
-interface State {
+export interface State {
   posts: PostState
   authors: AuthorState
 }
@@ -87,6 +87,9 @@ export class Store {
       }
       postsState.loaded = true
       this.state.posts = postsState
+      console.debug(
+        `Fetched posts: ${JSON.stringify(this.state.posts, replacer, 2)}`,
+      )
     }
   }
 }
