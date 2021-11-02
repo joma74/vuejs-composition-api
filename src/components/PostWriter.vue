@@ -81,14 +81,6 @@ export default defineComponent({
     const markdownHtmlContent = ref("")
     // Ref to a DOM node, see template above
     const markdownRawElement = ref<HTMLDivElement | null>(null)
-    /**
-     * Displays the scope id for this component instance e.g. data-v-2f5679e3
-     */
-    console.log(
-      `scopeId via proxy options is >>${
-        getCurrentInstance()?.proxy?.$options.__scopeId
-      }<<`,
-    )
 
     const parseHtml = (_newMarkdownRawContent: string) => {
       let _markdownHtmlContent = parse(_newMarkdownRawContent, {

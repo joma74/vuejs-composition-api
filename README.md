@@ -41,6 +41,17 @@ TBD
 
 `expect([errorCallParams: [Error, (Vue)Component, string]]...`
 
+### How to access vue`s component scope id?
+
+```ts
+import { getCurrentInstance } from "vue"
+console.log(getCurrentInstance()?.proxy?.$options.__scopeId)
+```
+
+At setup, the above code always returns `undefined`.header
+
+TBD
+
 ## Resolved Findings
 
 ### @/ as replacement for ./src
