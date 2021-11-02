@@ -355,3 +355,17 @@ props: {
     },
 },
 ```
+
+### Add a folder to git lfs
+
+See https://stackoverflow.com/a/54452098
+
+> If everything is set up correctly, you can verify that git LFS is going to work properly by:
+>
+> git add the file(s) in question.
+> Do one of the following:
+> Run git lfs status and ensure the file(s) in question appear under Git LFS objects to be committed, and that they have the LFS value in parenthesis; or
+> Run git lfs ls-files and ensure the file(s) in question appear in this output.
+> ⚠️ Important: After running git lfs track, you must run git add to refresh the state of files before calling git lfs status or git lfs ls-files. Otherwise you'll see irrelevant output from those commands.
+>
+> Also, for the record, looks like git lfs track "MyProject/Frameworks/\*\*" is the correct one for recursive matching.
