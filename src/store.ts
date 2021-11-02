@@ -4,6 +4,7 @@ import { DeepReadonly, DeepWritable } from "ts-essentials"
 import { Post } from "@/mock"
 import { replacer } from "@/utils"
 import cloneDeep from "lodash/cloneDeep"
+import remove from "lodash/remove.js"
 
 interface BaseState<T> {
   ids: string[]
@@ -90,6 +91,25 @@ export class Store {
       console.debug(
         `Fetched posts: ${JSON.stringify(this.state.posts, replacer, 2)}`,
       )
+    }
+  }
+
+  async signIn(user: User) {
+    const response = await axios.post<Author>("/sign_in", user)
+    this.state.authors.ids.push(response.data.id)
+    this.state.authors.all.set(response.data.id, response.data)
+    this.state.authors.currentUserId = response.data.id
+    console.debug(
+      `Signed in user: ${JSON.stringify(this.state.authors, replacer, 2)}`,
+    )
+  }
+
+  signOut() {
+    const currentUserId = this.state.authors.currentUserId
+    if (currentUserId) {
+      remove(this.state.authors.ids, (next) => next === currentUserId)
+      this.state.authors.all.delete(currentUserId)
+      this.state.authors.currentUserId = undefined
     }
   }
 }

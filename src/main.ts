@@ -56,6 +56,16 @@ axios.post = async (url: string, param: Post | User) => {
       data: author,
     })
   }
+  if (url === "/sign_in" && isAUser(param)) {
+    await delay()
+    const author: Author = {
+      username: param.username,
+      id: "1",
+    }
+    return Promise.resolve<{ data: Author }>({
+      data: author,
+    })
+  }
   return Promise.reject(
     new Error(
       `Missing handler for ${JSON.stringify(

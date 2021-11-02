@@ -4,6 +4,12 @@ import Signup from "@/components/Signup.vue"
 import { Store } from "@/store"
 import { spyOnHandler, expectNoErrorOrWarnOccured } from "./jest.setup"
 
+jest.mock("vue-router", () => ({
+  useRouter: () => {
+    return {}
+  },
+}))
+
 describe("Navbar", () => {
   let errorSpy: jest.Mock<any, any>
   let warnSpy: jest.Mock<any, any>
