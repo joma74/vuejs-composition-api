@@ -58,6 +58,14 @@ export class Store {
     )
   }
 
+  async updatePost(post: Post) {
+    const response = await axios.put<Post>("/posts", post)
+    this.state.posts.all.set(response.data.id, response.data)
+    console.debug(
+      `Updated post: ${JSON.stringify(this.state.posts, replacer, 2)}`,
+    )
+  }
+
   async createUser(user: User) {
     const response = await axios.post<User>("/users", user)
     this.state.authors.ids.push(response.data.id)

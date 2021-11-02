@@ -333,3 +333,14 @@ Generates
 }
 ...
 ```
+
+### How to type a vue component prop for TS
+
+```ts
+props: {
+    post: {
+        type: Object as () => Post,
+        required: true,
+    },
+},
+```

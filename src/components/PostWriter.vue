@@ -2,7 +2,7 @@
   ><div class="columns">
     <div class="column">
       <div class="field">
-        <div class="label">New post</div>
+        <div class="label">New | Edit post</div>
         <input
           type="text"
           class="input"
@@ -58,6 +58,9 @@ import { parse } from "marked"
 import highlight from "highlight.js"
 import debounce from "lodash/debounce.js"
 
+const POST_MARKDOWN_DEFAULT =
+  "## Title\nEnter your post content...\n```js\nlet a = 1\nconst f = () => {\n   console.log(a)\n}\nf()\n```\n"
+
 export default defineComponent({
   name: "PostWriter",
   props: {
@@ -74,18 +77,17 @@ export default defineComponent({
   },
   setup(props, ctx) {
     const title = ref(props.post.title)
-    const markdownRawContent = ref(
-      "## Title\nEnter your post content...\n```js\nlet a = 1\nconst f = () => {\n   console.log(a)\n}\nf()\n```\n",
-    )
+    const markdownRawContent = ref(props.post.markdown || POST_MARKDOWN_DEFAULT)
     const markdownHtmlContent = ref("")
     // Ref to a DOM node, see template above
     const markdownRawElement = ref<HTMLDivElement | null>(null)
-
     /**
      * Displays the scope id for this component instance e.g. data-v-2f5679e3
      */
     console.log(
-      `scopeId is >>${getCurrentInstance()?.proxy?.$options.__scopeId}<<`,
+      `scopeId via proxy options is >>${
+        getCurrentInstance()?.proxy?.$options.__scopeId
+      }<<`,
     )
 
     const parseHtml = (_newMarkdownRawContent: string) => {

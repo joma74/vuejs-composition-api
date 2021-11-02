@@ -22,6 +22,7 @@ axios.get = async (url: string) => {
       data: [today, thisWeek, thisMonth],
     })
   }
+  return Promise.reject(new Error(`Missing handler on url: >>${url}<<`))
 }
 
 // @ts-ignore
@@ -53,6 +54,35 @@ axios.post = async (url: string, param: Post | User) => {
     }
     return Promise.resolve<{ data: Author }>({
       data: author,
+    })
+  }
+  return Promise.reject(
+    new Error(
+      `Missing handler for ${JSON.stringify(
+        param,
+        replacer,
+        2,
+      )} on url: >>${url}<<`,
+    ),
+  )
+}
+
+// @ts-ignore
+axios.put = async (url: string, param: Post) => {
+  console.debug(
+    `Processing axios put with: ${JSON.stringify(
+      param,
+      replacer,
+      2,
+    )} on url: >>${url}<<`,
+  )
+  if (url === "/posts" && isAPost(param)) {
+    await delay()
+    const post: Post = {
+      ...param,
+    }
+    return Promise.resolve<{ data: Post }>({
+      data: post,
     })
   }
   return Promise.reject(
